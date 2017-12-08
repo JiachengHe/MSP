@@ -1,37 +1,54 @@
+#' @title Loading BRFSS data
+#' @description Specify the year of the BRFSS and load it as a data frmae
+#' @author Jiacheng He
+#'
+#' @param year
+#'
+#' @return A data frame
+#' @examples
+#' BRFSS1995 <- read_BRFSS(1995)
+#'
+#' @import SASxport
+#' @import dplyr
+#' @import rlang
+#' @export
+
+
+
 read_BRFSS <- function(year) {
-  
+
   library(SASxport); library(dplyr); library(rlang)
-  
-  filename <- ifelse(year <= 2010, 
+
+  filename <- ifelse(year <= 2010,
                      paste0("CDBRFS", substr(year, 3, 4), ".XPT"),
                      paste0("LLCP", year, ".XPT"))
-  
-#  if (year == 2002) {MEDCOST <- quo(MEDCARE) 
+
+#  if (year == 2002) {MEDCOST <- quo(MEDCARE)
 #  } else {MEDCOST <- quo(MEDCOST)}
-  
+
 #  if (year == 1995) {INCOME <- quo(INCOME95)
 #  } else {INCOME <- quo(INCOME2)}
-  
+
   df <- read.xport(filename)
   df[] <- lapply(df, unclass)
-  
-  df <- df %>% 
+
+  df <- df %>%
     as_data_frame() %>%
-    select(state = X.STATE, IMONTH, IDAY, IYEAR,  ## ID 
-           GENHLTH, PHYSHLTH, MENTHLTH, POORHLTH,   ## health status 
+    select(state = X.STATE, IMONTH, IDAY, IYEAR,  ## ID
+           GENHLTH, PHYSHLTH, MENTHLTH, POORHLTH,   ## health status
            HLTHPLAN, MEDCOST = starts_with("MEDC"), CHECKUP = starts_with("CHECKUP"), PERSDOC = starts_with("PERSDOC"), ## health care access
            AGE, MARITAL, EDUCA, EMPLOY, INCOME = starts_with("INCOME"), SEX, ## demographics
-           wt = X.FINALWT) %>% 
+           wt = X.FINALWT) %>%
     filter(AGE >= 65, state <= 56)
-  
-  
+
+
   ## 2007 survey contains IYEAR 2006,2007,2008
   if (3 %in% df$IYEAR) {
     print(paste0("In ", year, ", there are more than two interview years"))
     df$year <- df$IYEAR - 2 + year
   } else { df$year <- df$IYEAR - 1 + year }
-  
-  
+
+
   return(df)
 }
 
