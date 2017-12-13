@@ -19,6 +19,7 @@
 #' @import plm
 #' @import tidyr
 #' @import broom
+#' @import stringr
 #' @export
 
 

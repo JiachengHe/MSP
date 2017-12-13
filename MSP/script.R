@@ -12,13 +12,13 @@ model_3 <- specification("MEDCOST", model = "event_study")
 model_4 <- specification("MEDCOST", model = "event_study", controls = TRUE)
 
 
-fit1 <- regression_analysis(df, model_1)
-fit2 <- regression_analysis(df, model_1, cluster = df$state)
-fit3 <- regression_analysis(df, model_2, cluster = df$state)
+fit1 <- regression_analysis(BRFSS19952010, model_1)
+fit2 <- regression_analysis(BRFSS19952010, model_1, cluster = BRFSS19952010$state)
+fit3 <- regression_analysis(BRFSS19952010, model_2, cluster = BRFSS19952010$state)
 
-fit4 <- regression_analysis(df, model_3, event_plot = TRUE)
-fit5 <- regression_analysis(df, model_3, cluster = df$state, event_plot = TRUE)
-fit6 <- regression_analysis(df, model_4, cluster = df$state, event_plot = TRUE)
+fit4 <- regression_analysis(BRFSS19952010, model_3, event_plot = TRUE)
+fit5 <- regression_analysis(BRFSS19952010, model_3, cluster = BRFSS19952010$state, event_plot = TRUE)
+fit6 <- regression_analysis(BRFSS19952010, model_4, cluster = BRFSS19952010$state, event_plot = TRUE)
 
 fit1$fit
 fit2$fit
