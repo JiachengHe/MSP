@@ -2,7 +2,7 @@
 #' @description Write all cleaning process in this file
 #' @author Jiacheng He
 #'
-#' @param df_list
+#' @param df
 #'
 #' @return A data frame
 #' @examples
@@ -14,16 +14,19 @@
 #' @export
 
 
-clean_BRFSS <- function(merged_df) {
+clean_BRFSS <- function(df) {
 
   treated_states <-  data_frame(state = c(1, 4, 9, 10, 11, 23, 28, 36, 50),
                      treated = 1,
-                     rm_year = c(1998, 2001, 2009, 2000, 2008, 2006, 1999, 2008, 2006))
+                     rm_year = c(1998, 2001, 2009, 2000, 2008, 2006, 1999, 2008, 2006),
+                     rm_month = c(7, 10, 10, 5, 11, 2, 7, 4, 1))
+
+
   state <- data_frame(state = unique(df$state)) %>%
     left_join(treated_states) %>%
     replace_na(list(treated = 0, rm_year = 2049))
 
-  df <- merged_df %>%
+  df <- df %>%
     left_join(state, by = "state")
 
 

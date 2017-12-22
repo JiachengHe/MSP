@@ -37,3 +37,13 @@ fit6$event_plot + ggsave(filename = "fit6.pdf")
 #fit5 <- regression_analysis(df, "CHECKUP ~ state + year + event_time", cluster = df$state, event_plot = TRUE)
 
 #fit4 <- regression_analysis(df, "PERSDOC ~ state + year + event_time", cluster = df$state, event_plot = TRUE)
+
+
+
+### CPS analysis
+
+model_1 <- specification("HIMCAID", model = "DID")
+fit1 <- regression_analysis(df, HIMCAID ~ treated + year + post_treatment, cluster = df$state)
+
+model_2 <- specification("HIMCAID", model = "event_study")
+fit2 <- regression_analysis(filter(df, POVERTY==10), model_2, cluster = df$state, event_plot = TRUE)
