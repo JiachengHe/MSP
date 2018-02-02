@@ -4,7 +4,7 @@
 #'
 #' @param df The data frame that contains the regression variables
 #' @param model The regression model
-#' @param cluster Whether to cluster the standard error
+#' @param cluster Whether to cluster the standard error. A character of the cluster variable name
 #' @param event_plot Whether to generate the event study plot
 #' @param xlab The xlabel of the event plot
 #' @param ylab The ylabel of the event plot
@@ -37,7 +37,7 @@ regression_analysis <- function(df, model, cluster=NULL, event_plot=FALSE, xlab=
     fit <- summary(fit)
   } else {
     fit <- fit %>%
-      coeftest(vcov = plm::vcovHC(fit, method = "arellano", type = "HC0", cluster = cluster))
+      coeftest(vcov = plm::vcovHC(fit, method = "arellano", type = "HC0", cluster = df[[cluster]]))
 
     reg_matrix <- fit %>%
       tidy() %>%
