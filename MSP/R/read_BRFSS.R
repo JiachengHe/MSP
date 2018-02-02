@@ -8,9 +8,11 @@
 #' @examples
 #' BRFSS1995 <- read_BRFSS(1995)
 #'
-#' @import SASxport
-#' @import dplyr
-#' @import rlang
+#' @importFrom SASxport read.xport
+#' @importFrom dplyr '%>%'
+#' @importFrom dplyr as_data_frame
+#' @importFrom dplyr select
+#' @importFrom dplyr filter
 #' @export
 
 

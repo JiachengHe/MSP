@@ -4,7 +4,7 @@
 \alias{read_BRFSS}
 \title{Loading BRFSS data}
 \usage{
-read_BRFSS(year)
+read_BRFSS(year, path = NULL)
 }
 \arguments{
 \item{year}{}

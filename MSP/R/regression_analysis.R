@@ -12,14 +12,17 @@
 #' @return A list of regression result (and an event plot if specified)
 #' @examples
 #'
-#'
-#' @import dplyr
 #' @import ggplot2
-#' @import lmtest
-#' @import plm
-#' @import tidyr
-#' @import broom
-#' @import stringr
+#' @importFrom dplyr '%>%'
+#' @importFrom dplyr mutate
+#' @importFrom dplyr filter
+#' @importFrom dplyr add_row
+#' @importFrom lmtest coeftest
+#' @importFrom plm vcovHC
+#' @importFrom tidyr replace_na
+#' @importFrom broom tidy
+#' @importFrom stringr str_detect
+#' @importFrom stringr str_replace
 #' @export
 
 

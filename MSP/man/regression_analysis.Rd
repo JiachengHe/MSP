@@ -28,7 +28,6 @@ Write all regression procedure in this file
 }
 \examples{
 
-
 }
 \author{
 Jiacheng He

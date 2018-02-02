@@ -9,8 +9,12 @@
 #' read_BRFSS(2000) %>% clean_BRFSS()
 #' lapply(1995:2010, read_BRFSS) %>% merge_BRFSS() %>% clean_BRFSS()
 #'
-#' @import dplyr
-#' @import tidyr
+#' @importFrom dplyr '%>%'
+#' @importFrom dplyr data_frame
+#' @importFrom dplyr left_join
+#' @importFrom dplyr mutate
+#' @importFrom dplyr recode
+#' @importFrom tidyr replace_na
 #' @export
 
 

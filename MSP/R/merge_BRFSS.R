@@ -8,8 +8,8 @@
 #' @examples
 #' lapply(1995:2010, read_BRFSS) %>% merge_BRFSS()
 #'
-#' @import dplyr
-#' @import purrr
+#' @importFrom dplyr bind_rows
+#' @importFrom purrr reduce
 #' @export
 
 

@@ -4,10 +4,10 @@
 \alias{clean_BRFSS}
 \title{Clean the BRFSS data}
 \usage{
-clean_BRFSS(merged_df)
+clean_BRFSS(df)
 }
 \arguments{
-\item{df_list}{}
+\item{df}{}
 }
 \value{
 A data frame
