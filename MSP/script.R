@@ -1,16 +1,20 @@
 # library(dplyr); library(broom); library(ggplot2); library(stringr)
 # setwd("D:/BRFSS")
-# df <- lapply(1995:2010, read_BRFSS) %>% merge_BRFSS() %>% clean_BRFSS()
+df <- lapply(1995:2010, read_BRFSS, path = "D:/BRFSS/") %>% merge_BRFSS() %>% clean_BRFSS()
 # save(df, file = "BRFSS19952010.RData")
 # setwd("C:/Users/j774h/OneDrive/MSP")
+library(dplyr)
 data("BRFSS19952010")
 devtools::load_all()
 
 model_1 <- specification("MEDCOST", model = "DID")
 model_2 <- specification("MEDCOST", model = "DID", controls = TRUE)
-model_3 <- specification("MEDCOST", model = "event_study")
-model_4 <- specification("MEDCOST", model = "event_study", controls = TRUE)
+model_3 <- specification("MEDCOST", model = "event_time")
+model_4 <- specification("MEDCOST", model = "event_time", controls = TRUE)
 
+model_5 <- specification("MEDCOST", model = "event_month")
+
+fit7 <- regression_analysis(df, model_5, cluster = df$state, event_plot = TRUE)
 
 fit1 <- regression_analysis(BRFSS19952010, model_1)
 fit2 <- regression_analysis(BRFSS19952010, model_1, cluster = BRFSS19952010$state)
@@ -42,8 +46,10 @@ fit6$event_plot + ggsave(filename = "fit6.pdf")
 
 ### CPS analysis
 
+CPS <- read_csv("../CPS19952010.csv") %>% clean_CPS()
+
 model_1 <- specification("HIMCAID", model = "DID")
-fit1 <- regression_analysis(df, HIMCAID ~ treated + year + post_treatment, cluster = df$state)
+fit1 <- regression_analysis(CPS, HIMCAID ~ treated + year + post_treatment, cluster = CPS$state)
 
 model_2 <- specification("HIMCAID", model = "event_study")
-fit2 <- regression_analysis(filter(df, POVERTY==10), model_2, cluster = df$state, event_plot = TRUE)
+fit2 <- regression_analysis(filter(CPS, POVERTY==10), model_2, cluster = CPS$state, event_plot = TRUE)

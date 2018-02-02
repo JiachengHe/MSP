@@ -24,14 +24,16 @@ clean_BRFSS <- function(df) {
 
   state <- data_frame(state = unique(df$state)) %>%
     left_join(treated_states) %>%
-    replace_na(list(treated = 0, rm_year = 2049))
+    replace_na(list(treated = 0, rm_year = 2049, rm_month = 100))
 
   df <- df %>%
     left_join(state, by = "state")
 
 
   df$post_treatment <- (df$year > df$rm_year)
+  df$post_treatment_month <- ((df$year > df$rm_year) & (df$IMONTH > df$rm_month))
   df$event_time <- (df$year - df$rm_year) * df$treated
+  df$event_month <- ((df$year-df$rm_year)*12+(df$IMONTH-df$rm_month)) * df$treated
 
   # replace all nonsense values with NA (for LHS outcome variables)
   df$GENHLTH <- recode(df$GENHLTH, `7`=NA_integer_, `9`=NA_integer_)
@@ -53,10 +55,12 @@ clean_BRFSS <- function(df) {
     mutate(state = as.factor(state),
            year = as.factor(year),
            event_time = as.factor(event_time),
+           event_month = as.factor(event_month),
            AGE = as.factor(AGE),
            SEX = as.factor(SEX))
 
   df$event_time <- relevel(df$event_time, ref = "0")
+  df$event_month <- relevel(df$event_month, ref = "0")
 
   return(df)
 }

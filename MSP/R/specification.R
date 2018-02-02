@@ -16,10 +16,12 @@ specification <- function(LHS, model, controls=FALSE) {
 
   if (model=="DID") {
     RHS <- "state + year + post_treatment"
-  } else if (model == "event_study") {
+  } else if (model == "event_time") {
     RHS <- "state + year + event_time"
+  } else if (model == "event_month") {
+    RHS <- "state + year + event_month"
   } else {
-    stop('Model specification is either "DID" or "event_study"')
+    stop('Model specification is either "DID" or "event_time" or "event_month')
   }
 
   if (controls==TRUE) {

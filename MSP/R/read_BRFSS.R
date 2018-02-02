@@ -15,13 +15,13 @@
 
 
 
-read_BRFSS <- function(year) {
-
-  library(SASxport); library(dplyr); library(rlang)
+read_BRFSS <- function(year, path=NULL) {
 
   filename <- ifelse(year <= 2010,
                      paste0("CDBRFS", substr(year, 3, 4), ".XPT"),
                      paste0("LLCP", year, ".XPT"))
+
+  if (!is.null(path)) {filename <- paste0(path, filename)}
 
 #  if (year == 2002) {MEDCOST <- quo(MEDCARE)
 #  } else {MEDCOST <- quo(MEDCOST)}
@@ -47,6 +47,13 @@ read_BRFSS <- function(year) {
     print(paste0("In ", year, ", there are more than two interview years"))
     df$year <- df$IYEAR - 2 + year
   } else { df$year <- df$IYEAR - 1 + year }
+
+  ## In 2004, IMONTH contains value "13"
+  ## I found that is because they mistakenly record "IMONTH = IMONTH + 1"
+  if (13 %in% df$IMONTH) {
+    print(paste0("In ", year, ", there are 13 months ??"))
+    df$IMONTH <- df$IMONTH - 1
+  }
 
 
   return(df)
