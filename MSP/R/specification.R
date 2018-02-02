@@ -28,5 +28,7 @@ specification <- function(LHS, model, controls=FALSE) {
     RHS <- paste(RHS, "+ AGE + SEX + EDUCA + MARITAL + EMPLOY")
   }
 
-  return(paste(LHS, "~", RHS))
+  equation <- paste(LHS, "~", RHS)
+
+  return(list(equation = equation, model = model, y = LHS))
 }

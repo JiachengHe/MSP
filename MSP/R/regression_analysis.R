@@ -45,8 +45,8 @@ regression_analysis <- function(df, model, cluster=NULL, event_plot=FALSE,
 
   if (event_plot) {
     event_plot <- reg_matrix %>%
-      filter(str_detect(term, "event_time")) %>%
-      mutate(term = str_replace(term, "event_time", "")) %>%
+      filter(str_detect(term, model$model)) %>%
+      mutate(term = str_replace(term, model$model, "")) %>%
       mutate(term = as.numeric(term)) %>%
       add_row(term = 0, estimate = 0) %>%
       replace_na(list(conf.high = 0, conf.low = 0)) %>%
@@ -58,7 +58,7 @@ regression_analysis <- function(df, model, cluster=NULL, event_plot=FALSE,
       geom_line(aes(y = conf.low), linetype = 2) +
       geom_line(aes(y = conf.high), linetype = 2) +
       #  geom_pointrange(aes(ymin = conf.low, ymax = conf.high)) +
-      xlab("event time") +
+      xlab(model$model) +
       ylab("coefficient")
     return(list(reg_matrix = reg_matrix, event_plot = event_plot, fit = fit, N = N))
   } else {
