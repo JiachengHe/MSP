@@ -26,10 +26,9 @@
 #' @export
 
 
-regression_analysis <- function(df, model, cluster=NULL, event_plot=FALSE,
-                                xlab=NULL, ylab=NULL) {
+regression_analysis <- function(df, model, cluster=NULL, event_plot=FALSE, xlab=NULL, ylab=NULL) {
 
-  fit <- lm(model, weights = wt, data = df)
+  fit <- lm(model$equation, weights = wt, data = df)
 
   N <- length(fit$residuals)
 

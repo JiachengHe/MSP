@@ -19,7 +19,7 @@ specification <- function(LHS, model, controls=FALSE) {
   } else if (model == "event_time") {
     RHS <- "state + year + event_time"
   } else if (model == "event_month") {
-    RHS <- "state + year + event_month"
+    RHS <- "state + year + IMONTH + event_month"
   } else {
     stop('Model specification is either "DID" or "event_time" or "event_month')
   }
