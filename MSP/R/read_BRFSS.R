@@ -34,14 +34,25 @@ read_BRFSS <- function(year, path=NULL) {
   df <- read.xport(filename)
   df[] <- lapply(df, unclass)
 
-  df <- df %>%
-    as_data_frame() %>%
-    select(state = X.STATE, IMONTH, IDAY, IYEAR,  ## ID
-           GENHLTH, PHYSHLTH, MENTHLTH, POORHLTH,   ## health status
-           HLTHPLAN, MEDCOST = starts_with("MEDC"), CHECKUP = starts_with("CHECKUP"), PERSDOC = starts_with("PERSDOC"), ## health care access
-           AGE, MARITAL, EDUCA, EMPLOY, INCOME = starts_with("INCOME"), SEX, ## demographics
-           wt = X.FINALWT) %>%
-    filter(AGE >= 65, state <= 56)
+  if (year >= 1993) {
+    df <- df %>%
+      as_data_frame() %>%
+      select(state = X.STATE, IMONTH, IDAY, IYEAR,  ## ID
+             GENHLTH, PHYSHLTH, MENTHLTH, POORHLTH,   ## health status
+             HLTHPLAN, MEDCOST = starts_with("MEDC"), CHECKUP = starts_with("CHECKUP"), PERSDOC = starts_with("PERSDOC"), ## health care access
+             AGE, MARITAL, EDUCA, EMPLOY, INCOME = starts_with("INCOME"), SEX, ## demographics
+             wt = X.FINALWT) %>%
+      filter(AGE >= 65, state <= 56)
+  } else {
+    df <- df %>%
+      as_data_frame() %>%
+      select(state = X.STATE, IMONTH, IDAY, IYEAR,  ## ID
+             MEDCOST = starts_with("MEDC"), CHECKUP = starts_with("CHECKUP"), PERSDOC = starts_with("PERSDOC"), ## health care access
+             AGE, MARITAL, EDUCA, EMPLOY, INCOME = starts_with("INCOME"), SEX, ## demographics
+             wt = X.FINALWT) %>%
+      filter(AGE >= 65, state <= 56)
+  }
+
 
 
   ## 2007 survey contains IYEAR 2006,2007,2008

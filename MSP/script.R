@@ -1,9 +1,10 @@
 # library(dplyr); library(broom); library(ggplot2); library(stringr)
-BRFSS <- lapply(1995:2010, read_BRFSS, path = "D:/BRFSS/") %>% merge_BRFSS() %>% clean_BRFSS()
+devtools::load_all()
+BRFSS <- lapply(1991:2010, read_BRFSS, path = "D:/BRFSS/") %>% merge_BRFSS() %>% clean_BRFSS()
 save(BRFSS, file = "BRFSS.RData")
 library(dplyr)
 data("BRFSS19952010")
-devtools::load_all()
+
 
 model_1 <- specification("MEDCOST", model = "DID")
 model_2 <- specification("MEDCOST", model = "DID", controls = TRUE)
