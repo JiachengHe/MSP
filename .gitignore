@@ -34,3 +34,6 @@ vignettes/*.pdf
 .Rproj.user
 
 /Literature/
+
+backup/*.csv
+*.csv
