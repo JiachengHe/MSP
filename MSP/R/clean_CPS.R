@@ -12,7 +12,7 @@
 clean_CPS <- function(df) {
 
   df <- df %>%
-    rename(state = STATEFIP, year = YEAR, wt = WTSUPP)
+    rename(state = STATEFIP, year = YEAR, wt = ASECWT)
 
   treated_states <-  data_frame(state = c(1, 4, 9, 10, 11, 23, 28, 36, 50),
                                 treated = 1,
@@ -34,8 +34,6 @@ clean_CPS <- function(df) {
   df$HIMCARE <- df$HIMCARE - 1
   df$PHINSUR <- df$PHINSUR - 1
 
-  df$state <- factor(df$state)
-  df$year <- factor(df$year)
   df$event_time <- factor(df$event_time)
   df$event_time <- relevel(df$event_time, ref = "0")
 

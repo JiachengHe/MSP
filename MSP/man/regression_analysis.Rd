@@ -12,7 +12,7 @@ regression_analysis(df, model, cluster = NULL, event_plot = FALSE,
 
 \item{model}{The regression model}
 
-\item{cluster}{Whether to cluster the standard error}
+\item{cluster}{Whether to cluster the standard error. A character of the cluster variable name}
 
 \item{event_plot}{Whether to generate the event study plot}
 

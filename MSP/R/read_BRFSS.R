@@ -19,9 +19,13 @@
 
 read_BRFSS <- function(year, path=NULL) {
 
-  filename <- ifelse(year <= 2010,
-                     paste0("CDBRFS", substr(year, 3, 4), ".XPT"),
-                     paste0("LLCP", year, ".XPT"))
+  if (year %in% 1991:2010) {
+    filename <- paste0("CDBRFS", substr(year, 3, 4), ".XPT")
+  } else if (year %in% 2011:2014) {
+    filename <- paste0("LAND", year, ".XPT")
+  } else if (year %in% 2015:2016) {
+    filename <- paste0("LLCP", year, ".XPT")
+  } else {stop("Year out of range.")}
 
   if (!is.null(path)) {filename <- paste0(path, filename)}
 
@@ -34,16 +38,7 @@ read_BRFSS <- function(year, path=NULL) {
   df <- read.xport(filename)
   df[] <- lapply(df, unclass)
 
-  if (year >= 1993) {
-    df <- df %>%
-      as_data_frame() %>%
-      select(state = X.STATE, IMONTH, IDAY, IYEAR,  ## ID
-             GENHLTH, PHYSHLTH, MENTHLTH, POORHLTH,   ## health status
-             HLTHPLAN, MEDCOST = starts_with("MEDC"), CHECKUP = starts_with("CHECKUP"), PERSDOC = starts_with("PERSDOC"), ## health care access
-             AGE, MARITAL, EDUCA, EMPLOY, INCOME = starts_with("INCOME"), SEX, ## demographics
-             wt = X.FINALWT) %>%
-      filter(AGE >= 65, state <= 56)
-  } else {
+  if (year <= 2010) {
     df <- df %>%
       as_data_frame() %>%
       select(state = X.STATE, IMONTH, IDAY, IYEAR,  ## ID
@@ -51,7 +46,62 @@ read_BRFSS <- function(year, path=NULL) {
              AGE, MARITAL, EDUCA, EMPLOY, INCOME = starts_with("INCOME"), SEX, ## demographics
              wt = X.FINALWT) %>%
       filter(AGE >= 65, state <= 56)
+  } else if (year %in% 2011:2012) {
+    df <- df %>%
+      as_data_frame() %>%
+      select(state = X.STATE, IMONTH, IDAY, IYEAR,  ## ID
+             MEDCOST = starts_with("MEDC"), CHECKUP = starts_with("CHECKUP"), PERSDOC = starts_with("PERSDOC"), ## health care access
+             AGE, MARITAL, EDUCA, EMPLOY, INCOME = starts_with("INCOME"), SEX, ## demographics
+             wt = X.LANDWT) %>%
+      filter(AGE >= 65, state <= 56)
+  } else if (year %in% 2013:2014) {
+    df <- df %>%
+      as_data_frame() %>%
+      select(state = X.STATE, IMONTH, IDAY, IYEAR,  ## ID
+             MEDCOST = starts_with("MEDC"), CHECKUP = starts_with("CHECKUP"), PERSDOC = starts_with("PERSDOC"), ## health care access
+             X.AGE65YR, MARITAL, EDUCA, EMPLOY = starts_with("EMPLOY"), INCOME = starts_with("INCOME"), SEX, ## demographics
+             wt = X.LANDWT) %>%
+      filter(X.AGE65YR ==2, state <= 56)
+  } else if (year == 2015) {
+    df <- df %>%
+      as_data_frame() %>%
+      select(state = X.STATE, IMONTH, IDAY, IYEAR,  ## ID
+             MEDCOST = starts_with("MEDC"), CHECKUP = starts_with("CHECKUP"), PERSDOC = starts_with("PERSDOC"), ## health care access
+             X.AGE65YR, MARITAL, EDUCA, EMPLOY = starts_with("EMPLOY"), INCOME = starts_with("INCOME"), SEX, ## demographics
+             wt = X.LLCPWT, CELLFON2) %>%
+      filter(X.AGE65YR ==2, state <= 56, is.na(CELLFON2)) %>%
+      select(-CELLFON2)
+  } else if (year == 2016) {
+    df <- df %>%
+      as_data_frame() %>%
+      select(state = X.STATE, IMONTH, IDAY, IYEAR,  ## ID
+             MEDCOST = starts_with("MEDC"), CHECKUP = starts_with("CHECKUP"), PERSDOC = starts_with("PERSDOC"), ## health care access
+             X.AGE65YR, MARITAL, EDUCA, EMPLOY = starts_with("EMPLOY"), INCOME = starts_with("INCOME"), SEX, ## demographics
+             wt = X.LLCPWT, CELLFON5) %>%
+      filter(X.AGE65YR == 2, state <= 56, is.na(CELLFON5)) %>%
+      select(-CELLFON5)
   }
+
+
+
+#  if (year >= 1993) {
+#    df <- df %>%
+#      as_data_frame() %>%
+#      select(state = X.STATE, IMONTH, IDAY, IYEAR,  ## ID
+#             GENHLTH, PHYSHLTH, MENTHLTH, POORHLTH,   ## health status
+#             HLTHPLAN, MEDCOST = starts_with("MEDC"), CHECKUP = starts_with("CHECKUP"), PERSDOC = starts_with("PERSDOC"), ## health care access
+#             AGE, MARITAL, EDUCA, EMPLOY, INCOME = starts_with("INCOME"), SEX, ## demographics
+#             wt = X.FINALWT) %>%
+#      filter(AGE >= 65, state <= 56)
+#  } else {
+#    df <- df %>%
+#      as_data_frame() %>%
+#      select(state = X.STATE, IMONTH, IDAY, IYEAR,  ## ID
+#             MEDCOST = starts_with("MEDC"), CHECKUP = starts_with("CHECKUP"), PERSDOC = starts_with("PERSDOC"), ## health care access
+#             AGE, MARITAL, EDUCA, EMPLOY, INCOME = starts_with("INCOME"), SEX, ## demographics
+#             wt = X.FINALWT) %>%
+#      filter(AGE >= 65, state <= 56)
+#  }
 
 
 
@@ -61,12 +111,20 @@ read_BRFSS <- function(year, path=NULL) {
     df$year <- df$IYEAR - 2 + year
   } else { df$year <- df$IYEAR - 1 + year }
 
+  ## Large coding errors in IMONTH in 2011
+  if (year == 2011) {
+    df$IMONTH[df$IMONTH == 1] <- 4
+    df$IMONTH[df$IMONTH == 2] <- 11
+    df$IMONTH <- df$IMONTH - 2
+  }
+
   ## In 2004, IMONTH contains value "13"
   ## I found that is because they mistakenly record "IMONTH = IMONTH + 1"
   if (13 %in% df$IMONTH) {
     print(paste0("In ", year, ", there are 13 months ??"))
     df$IMONTH <- df$IMONTH - 1
   }
+
 
 
   return(df)

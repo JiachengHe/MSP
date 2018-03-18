@@ -40,13 +40,13 @@ clean_BRFSS <- function(df) {
   df$event_month <- ((df$year-df$rm_year)*12+(df$IMONTH-df$rm_month)) * df$treated
 
   # replace all nonsense values with NA (for LHS outcome variables)
-  if (max(df$year) >= 1993) {    ### Before 1993 these variable did not exist
-    df$GENHLTH <- recode(df$GENHLTH, `7`=NA_integer_, `9`=NA_integer_)
-    df$PHYSHLTH <- recode(df$PHYSHLTH, `88`=0L, `77`=NA_integer_, `99`=NA_integer_)
-    df$MENTHLTH <- recode(df$MENTHLTH, `88`=0L, `77`=NA_integer_, `99`=NA_integer_)
-    df$POORHLTH <- recode(df$POORHLTH, `88`=0L, `77`=NA_integer_, `99`=NA_integer_)
-    df$HLTHPLAN <- recode(df$HLTHPLAN, `2`=0L, `7`=NA_integer_, `9`=NA_integer_)
-  }
+#  if (max(df$year) >= 1993) {    ### Before 1993 these variable did not exist
+#    df$GENHLTH <- recode(df$GENHLTH, `7`=NA_integer_, `9`=NA_integer_)
+#    df$PHYSHLTH <- recode(df$PHYSHLTH, `88`=0L, `77`=NA_integer_, `99`=NA_integer_)
+#    df$MENTHLTH <- recode(df$MENTHLTH, `88`=0L, `77`=NA_integer_, `99`=NA_integer_)
+#    df$POORHLTH <- recode(df$POORHLTH, `88`=0L, `77`=NA_integer_, `99`=NA_integer_)
+#    df$HLTHPLAN <- recode(df$HLTHPLAN, `2`=0L, `7`=NA_integer_, `9`=NA_integer_)
+#  }
   if (max(df$year) >= 2000) {    ### Before 2000 these variable did not exist
     df$PERSDOC <- recode(df$PERSDOC, `7`=NA_integer_, `9`=NA_integer_)
   }
@@ -61,9 +61,7 @@ clean_BRFSS <- function(df) {
   df$INCOME <- recode(df$INCOME, .missing = 100L) %>% as.factor()
 
   df <- df %>%
-    mutate(state = as.factor(state),
-           year = as.factor(year),
-           event_time = as.factor(event_time),
+    mutate(event_time = as.factor(event_time),
            event_month = as.factor(event_month),
            AGE = as.factor(AGE),
            SEX = as.factor(SEX))
