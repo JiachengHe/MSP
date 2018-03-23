@@ -37,3 +37,4 @@ vignettes/*.pdf
 
 backup/*.csv
 *.csv
+/plot/
